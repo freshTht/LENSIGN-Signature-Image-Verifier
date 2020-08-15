@@ -1,5 +1,5 @@
 import json
-import ls_models
+import src.ls_models
 
 import flask
 from flask import Flask, request
