@@ -30,19 +30,19 @@ def input_shape():
     'data': input_shape,
   })
 
-# @app.route('/test-params', methods=['GET', 'POST'])
-# def test_params():
-#   json = request.get_json()
-#   form_data = request.form    # body (form data)
-#   params = request.args       # args (in url)
-#   return flask.jsonify({
-#     'success': True,
-#     'data': {
-#       'json': json,
-#       'form_data': form_data,
-#       'params': params,
-#     }
-#   })
+@app.route('/test-params', methods=['GET', 'POST'])
+def test_params():
+  json = request.get_json()
+  form_data = request.form    # body (form data)
+  params = request.args       # args (in url)
+  return flask.jsonify({
+    'success': True,
+    'data': {
+      'json': json,
+      'form_data': form_data,
+      'params': params,
+    }
+  })
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', debug=True)
