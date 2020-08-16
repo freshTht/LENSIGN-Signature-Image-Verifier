@@ -1,5 +1,5 @@
 import json
-from src import ls_models
+from . import ls_models
 
 import flask
 from flask import Flask, request
@@ -13,12 +13,34 @@ def hello_world():
 def test():
   json = request.get_json()
   x = json['x']
-  results = ls_models.predict(x)
+  n = len(x)
+
+  # equal-width sampling
+  REQUIRED_N = 120     # TODO: don't hard code this
+  step = (n-1) / (REQUIRED_N-1)
+  decimal_i = 0
+
+  indexes = []
+  sampled_x = []
+  while len(indexes) < REQUIRED_N:
+    i = int(decimal_i)
+    indexes.append(i)
+    sampled_x.append(x[i])
+    decimal_i += step
+
+  y = ls_models.predict(x)
+  sampled_y = ls_models.predict(sampled_x)
   return flask.jsonify({
     'success': True,
     'data': {
-      # 'input': x,
-      'result': results
+      'raw': {
+        'input-size': n,
+        'result': y,
+      },
+      'sampled': {
+        'input-size': len(indexes),
+        'result': sampled_y,
+      }
     },
   })
 
