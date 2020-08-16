@@ -9,7 +9,7 @@ app = Flask(__name__)
 def hello_world():
   return 'Hello, World!'
 
-@app.route('/model/classify', methods=['GET'])
+@app.route('/model/classify', methods=['GET', 'POST'])
 def test():
   json = request.get_json()
   x = json['x']
