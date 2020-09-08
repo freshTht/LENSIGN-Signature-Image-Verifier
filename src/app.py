@@ -1,5 +1,5 @@
 import json
-from . import ls_models
+from controllers import ls_models, ls_firebase
 
 import flask
 from flask import Flask, request
@@ -64,6 +64,27 @@ def test_params():
       'form_data': form_data,
       'params': params,
     }
+  })
+
+#
+# Firebase
+#
+@app.route('/training/datasets', methods=['GET'])
+def datasets_list():
+  result = ls_firebase.datasets.get_all()
+
+  return flask.jsonify({
+    'success': True,
+    'data': result
+  })
+
+@app.route('/training/datasets', methods=['POST'])
+def datasets_new():
+  form_data = request.form
+  result = ls_firebase.datasets.new(form_data['name'])
+  return flask.jsonify({
+    'success': True,
+    'data': result
   })
 
 if __name__ == "__main__":

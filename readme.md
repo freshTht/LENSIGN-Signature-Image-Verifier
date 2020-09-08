@@ -5,5 +5,5 @@ on macOS / Linux
 
 on Windows
 ```js
-./win-run-dev.sh
+./win-run-dev.bat
 ```
