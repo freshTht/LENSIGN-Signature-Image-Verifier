@@ -1,5 +1,5 @@
 import json
-from controllers import ls_models, ls_firebase
+from .controllers import ls_models, ls_firebase
 
 import flask
 from flask import Flask, request
