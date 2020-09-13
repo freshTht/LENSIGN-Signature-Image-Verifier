@@ -80,8 +80,8 @@ def datasets_list():
 
 @app.route('/training/datasets', methods=['POST'])
 def datasets_new():
-  form_data = request.form
-  result = ls_firebase.datasets.add(form_data['name'])
+  json = request.get_json()
+  result = ls_firebase.datasets.add(json['name'])
   return flask.jsonify({
     'success': True,
     'data': result
@@ -97,8 +97,8 @@ def datasets_list_signatures(id):
 
 @app.route('/training/datasets/<id>/signatures', methods=['POST'])
 def datasets_new_signature(id):
-  form_data = request.form
-  result = ls_firebase.datasets.add_signature(id, form_data['signature'])
+  json = request.get_json()
+  result = ls_firebase.datasets.add_signature(id, json['signature'])
   return flask.jsonify({
     'success': True,
     'data': result
