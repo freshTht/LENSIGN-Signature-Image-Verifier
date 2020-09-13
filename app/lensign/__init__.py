@@ -71,7 +71,7 @@ def test_params():
 #
 @app.route('/training/datasets', methods=['GET'])
 def datasets_list():
-  result = ls_firebase.datasets.get_all()
+  result = ls_firebase.datasets.list_all()
 
   return flask.jsonify({
     'success': True,
@@ -81,7 +81,24 @@ def datasets_list():
 @app.route('/training/datasets', methods=['POST'])
 def datasets_new():
   form_data = request.form
-  result = ls_firebase.datasets.new(form_data['name'])
+  result = ls_firebase.datasets.add(form_data['name'])
+  return flask.jsonify({
+    'success': True,
+    'data': result
+  })
+
+@app.route('/training/datasets/<id>/signatures', methods=['GET'])
+def datasets_list_signatures(id):
+  result = ls_firebase.datasets.list_signatures(id)
+  return flask.jsonify({
+    'success': True,
+    'data': result
+  })
+
+@app.route('/training/datasets/<id>/signatures', methods=['POST'])
+def datasets_new_signature(id):
+  form_data = request.form
+  result = ls_firebase.datasets.add_signature(id, form_data['signature'])
   return flask.jsonify({
     'success': True,
     'data': result
