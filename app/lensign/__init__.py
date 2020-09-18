@@ -81,7 +81,13 @@ def datasets_list():
 @app.route('/training/datasets', methods=['POST'])
 def datasets_new():
   json = request.get_json()
-  result = ls_firebase.datasets.add(json['name'])
+  form_data = request.form    # body (form data)
+
+  if json != None:
+    result = ls_firebase.datasets.add(json['name'])
+  else:
+    result = ls_firebase.datasets.add(form_data['name'])
+
   return flask.jsonify({
     'success': True,
     'data': result
