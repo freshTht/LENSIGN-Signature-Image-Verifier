@@ -16,7 +16,7 @@ def test():
   n = len(x)
 
   # equal-width sampling
-  REQUIRED_N = 120     # TODO: don't hard code this
+  REQUIRED_N = ls_models.get_input_shape()[0]
   step = (n-1) / (REQUIRED_N-1)
   decimal_i = 0
 
@@ -28,15 +28,15 @@ def test():
     sampled_x.append(x[i])
     decimal_i += step
 
-  y = ls_models.predict(x)
+  # y = ls_models.predict(x)
   sampled_y = ls_models.predict(sampled_x)
   return flask.jsonify({
     'success': True,
     'data': {
-      'raw': {
-        'input-size': n,
-        'result': y,
-      },
+      # 'raw': {
+      #   'input-size': n,
+      #   'result': y,
+      # },
       'sampled': {
         'input-size': len(indexes),
         'result': sampled_y,
