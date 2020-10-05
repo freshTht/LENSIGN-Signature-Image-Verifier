@@ -22,7 +22,7 @@ testX = np.array([
 
 # MODEL_PATH = './model/model-1595357897.591268.h5'
 # MODEL_PATH = './model/trained/1601885255.576588/model-round-9.h5'
-MODEL_PATH = './model/trained/1601902954.558485/model-round-4.h5'
+MODEL_PATH = './model/trained/1601902954.558485/model-round-2.h5'
 input_shape = None
 model = None
 
