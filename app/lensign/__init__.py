@@ -110,5 +110,15 @@ def datasets_new_signature(id):
     'data': result
   })
 
+# WIP
+# @app.route('/training/datasets/<id>/signatures/execute', methods=['POST'])
+# def datasets_new_signature(id):
+#   json = request.get_json()
+#   result = ls_firebase.datasets.add_signature(id, json['signature'])
+#   return flask.jsonify({
+#     'success': True,
+#     'data': result
+#   })
+
 if __name__ == "__main__":
   app.run(host='0.0.0.0', debug=True)

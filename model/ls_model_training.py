@@ -159,7 +159,7 @@ def createModel(n_timesteps, n_features):   # , n_outputs
 # fit and evaluate a model
 def evaluate_model(trainX, trainy, testX, testy, round):
   verbose = 0
-  epochs = 30
+  epochs = 15
   batch_size = 64
 
   n_timesteps = trainX.shape[1]
