@@ -1,1 +1,1 @@
-web: gunicorn app.lensign:app
+web: gunicorn app.lensign:app --log-level debug
