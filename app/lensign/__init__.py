@@ -8,6 +8,7 @@ from flask import Flask, request
 UPLOAD_FOLDER = './tmp/sigver-images'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.debug = True
 
 from werkzeug.utils import secure_filename
 import os, signal
