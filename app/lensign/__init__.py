@@ -25,6 +25,20 @@ def kill_server():
 def hello_world():
   return 'Hello, World!'
 
+@app.route('/test-params', methods=['GET', 'POST'])
+def test_params():
+  json = request.get_json()
+  form_data = request.form    # body (form data)
+  params = request.args       # args (in url)
+  return flask.jsonify({
+    'success': True,
+    'data': {
+      'json': json,
+      'form_data': form_data,
+      'params': params,
+    }
+  })
+
 #
 # SigVer (Image)
 #
@@ -37,7 +51,7 @@ def sigver_test():
     'data': res
   })
 
-@app.route('/model/image/classify/<user_id>/', methods=['GET','POST'])
+@app.route('/model/image/classify/<user_id>', methods=['GET','POST'])
 def sigver_classify(user_id):
   user_ud = 10
   
