@@ -30,12 +30,18 @@ def test_params():
   json = request.get_json()
   form_data = request.form    # body (form data)
   params = request.args       # args (in url)
+  
+  files = {}
+  for key in request.files:
+    files[key] = request.files[key].filename
+
   return flask.jsonify({
     'success': True,
     'data': {
       'json': json,
       'form_data': form_data,
       'params': params,
+      'files': files,
     }
   })
 
