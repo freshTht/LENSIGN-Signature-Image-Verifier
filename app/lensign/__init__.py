@@ -135,13 +135,19 @@ def sigver_analyse():
       FILE_NAME = file_name_with_token[0]
       FILE_PATH = IMG_UPLOAD_PATH + '/' + FILE_NAME
 
-      # download with wget
-      stream = os.popen(
-        'wget "{}" -O {}'.format(URL,FILE_PATH)
-      )
-      output = stream.read()
+      # check if the file already exists
+      already_exists = os.path.isfile(FILE_PATH)
 
-      # check that file exists
+      if not already_exists:
+        print('downloading file: {}'.format(FILE_NAME))
+
+        # download with wget
+        stream = os.popen('wget "{}" -O {}'.format(URL,FILE_PATH))
+        output = stream.read()
+      else:
+        print('file already exists: {}'.format(FILE_NAME))
+
+      # check that the file exists
       success = os.path.isfile(FILE_PATH)
       # FILE_PATH = os.path.join(app.config['UPLOAD_FOLDER'], FILE_PATH)
       
