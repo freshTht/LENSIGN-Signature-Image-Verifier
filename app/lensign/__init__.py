@@ -13,6 +13,9 @@ app.debug = True
 from werkzeug.utils import secure_filename
 import os, signal
 
+import wget
+import urllib
+
 @app.route('/snap-snap', methods=['POST'])
 def kill_server():
   os.kill(os.getpid(), signal.SIGINT)
@@ -58,8 +61,8 @@ def sigver_test():
   })
 
 @app.route('/model/image/classify/<user_id>', methods=['GET','POST'])
-def sigver_classify(user_id):
-  user_ud = 10
+def sigver_classify_test(user_id):
+  user_id = 10
   
   if 'file' not in request.files:
     return flask.jsonify({
@@ -89,6 +92,84 @@ def sigver_classify(user_id):
       'success': True,
       'data': res,
     })
+
+IMG_UPLOAD_PATH = 'tmp/analyse'
+@app.route('/model/image/analyse/', methods=['GET','POST'])
+def sigver_analyse():
+  ORIGINAL_IMG_URLS = request.form.getlist('original_images[]')
+  ORIGINAL_IMAGES = []
+  
+  if 'file' not in request.files:
+    return flask.jsonify({
+      'success': False,
+      'message': 'No file part'
+    })
+
+  file = request.files['file']
+  if file.filename == '':
+    return flask.jsonify({
+      'success': False,
+      'message': 'No file selected for uploading'
+    })
+    return redirect(request.url)
+  
+  if not file:
+    return flask.jsonify({
+      'success': False,
+      'message': 'No file found'
+    })
+  
+  # save file
+  filename = secure_filename(file.filename)
+  filepath = os.path.join(app.config['UPLOAD_FOLDER'],filename) 
+  file.save(filepath)
+
+  try:
+    # URL = 'https://firebasestorage.googleapis.com/v0/b/lensign-wanda.appspot.com/o/users%2F11%2Fsig%2F1607312157477.png?alt=media&token=59e98115-5a35-4339-95f9-e713bf2c106b'
+    for URL in ORIGINAL_IMG_URLS:
+
+      # preprocess file name
+      splitted = URL.split('/')
+      FILE_NAME = splitted[len(splitted) - 1]
+      file_name_with_token = FILE_NAME.split('?')
+      FILE_NAME = file_name_with_token[0]
+      FILE_PATH = IMG_UPLOAD_PATH + '/' + FILE_NAME
+
+      # download with wget
+      stream = os.popen(
+        'wget "{}" -O {}'.format(URL,FILE_PATH)
+      )
+      output = stream.read()
+
+      # check that file exists
+      success = os.path.isfile(FILE_PATH)
+      # FILE_PATH = os.path.join(app.config['UPLOAD_FOLDER'], FILE_PATH)
+      
+      if not success:
+        continue
+
+      # add to array
+      ORIGINAL_IMAGES.append(FILE_PATH)
+
+    # analyse
+    res = ls_image_classifier.analyse(ORIGINAL_IMAGES, filepath)
+
+    return flask.jsonify({
+      'success': True,
+      # 'data': {
+      #   'success': success,
+      #   'original': ORIGINAL_IMG_URLS,
+      #   'results': res,
+      # },
+      'data': res
+    })
+  except urllib.error.HTTPError as e:
+    return flask.jsonify({
+      'success': False,
+      'url': url,
+      'error': str(e)
+    })
+
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', debug=True)

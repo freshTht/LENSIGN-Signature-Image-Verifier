@@ -201,3 +201,49 @@ def get_distance(user_id, filename):
     'dists': dists,
     'file': filename
   }
+
+def analyse(SIGNATURE_IMAGES_PATH, filename):
+  # 
+  # Processing multiple images and obtaining feature vectors
+  # 
+  user1_sigs = [load_signature(PATH) for PATH in SIGNATURE_IMAGES_PATH]
+  uploaded_sigs = [load_signature(filename)]
+
+  # print(uploaded_sigs)
+  canvas_size = (952, 1360)
+
+  processed_user1_sigs = torch.tensor([preprocess_signature(sig, canvas_size) for sig in user1_sigs])
+  uploaded_sigs = torch.tensor([preprocess_signature(sig, canvas_size) for sig in uploaded_sigs])
+
+  #
+  # Inputs need to have 4 dimensions (batch x channels x height x width), and also be between [0, 1]
+  #
+  processed_user1_sigs = processed_user1_sigs.view(-1, 1, 150, 220).float().div(255)
+  uploaded_sigs = uploaded_sigs.view(-1, 1, 150, 220).float().div(255)
+
+  # 
+  # Obtain the features. Note that you can process multiple images at the same time
+  # 
+  with torch.no_grad():
+    user_features = base_model(processed_user1_sigs.to(device))
+    uploaded_features = base_model(uploaded_sigs.to(device))
+
+
+  #  ----
+  #  ----
+
+  #
+  # Inspecting the learned features
+  #
+
+  print(user_features.shape)
+  print(uploaded_features.shape)
+
+  print('Euclidean distance between signatures from different users')
+  dists = [torch.norm(u1 - u2).item() for u1 in user_features for u2 in uploaded_features]
+  print(dists)
+
+  return {
+    'dists': dists,
+    'file': filename
+  }
