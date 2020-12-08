@@ -1,5 +1,4 @@
 import json
-from .controllers import ls_firebase
 from . import ls_image_classifier
 
 import flask
