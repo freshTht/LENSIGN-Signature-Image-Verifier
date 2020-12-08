@@ -120,51 +120,50 @@ def sigver_analyse():
   filepath = os.path.join(app.config['UPLOAD_FOLDER'],filename) 
   file.save(filepath)
 
-  try:
-    # URL = 'https://firebasestorage.googleapis.com/v0/b/lensign-wanda.appspot.com/o/users%2F11%2Fsig%2F1607312157477.png?alt=media&token=59e98115-5a35-4339-95f9-e713bf2c106b'
-    for URL in ORIGINAL_IMG_URLS:
+  # URL = 'https://firebasestorage.googleapis.com/v0/b/lensign-wanda.appspot.com/o/users%2F11%2Fsig%2F1607312157477.png?alt=media&token=59e98115-5a35-4339-95f9-e713bf2c106b'
+  for URL in ORIGINAL_IMG_URLS:
 
-      # preprocess file name
-      splitted = URL.split('/')
-      FILE_NAME = splitted[len(splitted) - 1]
-      file_name_with_token = FILE_NAME.split('?')
-      FILE_NAME = file_name_with_token[0]
-      FILE_PATH = IMG_UPLOAD_PATH + '/' + FILE_NAME
+    # preprocess file name
+    splitted = URL.split('/')
+    FILE_NAME = splitted[len(splitted) - 1]
+    file_name_with_token = FILE_NAME.split('?')
+    FILE_NAME = file_name_with_token[0]
+    FILE_PATH = IMG_UPLOAD_PATH + '/' + FILE_NAME
 
-      # check if the file already exists
-      already_exists = os.path.isfile(FILE_PATH)
+    # check if the file already exists
+    already_exists = os.path.isfile(FILE_PATH)
 
-      if not already_exists:
-        print('downloading file: {}'.format(FILE_NAME))
+    if not already_exists:
+      print('downloading file: {}'.format(FILE_NAME))
 
-        # download with wget
-        stream = os.popen('wget "{}" -O {}'.format(URL,FILE_PATH))
-        output = stream.read()
-      else:
-        print('file already exists: {}'.format(FILE_NAME))
+      # download with wget
+      stream = os.popen('wget "{}" -O {}'.format(URL,FILE_PATH))
+      output = stream.read()
+    else:
+      print('file already exists: {}'.format(FILE_NAME))
 
-      # check that the file exists
-      success = os.path.isfile(FILE_PATH)
-      # FILE_PATH = os.path.join(app.config['UPLOAD_FOLDER'], FILE_PATH)
-      
-      if not success:
-        continue
+    # check that the file exists
+    success = os.path.isfile(FILE_PATH)
+    # FILE_PATH = os.path.join(app.config['UPLOAD_FOLDER'], FILE_PATH)
+    
+    if not success:
+      continue
 
-      # add to array
-      ORIGINAL_IMAGES.append(FILE_PATH)
+    # add to array
+    ORIGINAL_IMAGES.append(FILE_PATH)
 
-    # analyse
-    res = ls_image_classifier.analyse(ORIGINAL_IMAGES, filepath)
+  # analyse
+  res = ls_image_classifier.analyse(ORIGINAL_IMAGES, filepath)
 
-    return flask.jsonify({
-      'success': True,
-      # 'data': {
-      #   'success': success,
-      #   'original': ORIGINAL_IMG_URLS,
-      #   'results': res,
-      # },
-      'data': res
-    })
+  return flask.jsonify({
+    'success': True,
+    # 'data': {
+    #   'success': success,
+    #   'original': ORIGINAL_IMG_URLS,
+    #   'results': res,
+    # },
+    'data': res
+  })
 
 
 if __name__ == "__main__":
