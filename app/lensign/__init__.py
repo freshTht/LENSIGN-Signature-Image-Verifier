@@ -12,9 +12,6 @@ app.debug = True
 from werkzeug.utils import secure_filename
 import os, signal
 
-import wget
-import urllib
-
 @app.route('/snap-snap', methods=['POST'])
 def kill_server():
   os.kill(os.getpid(), signal.SIGINT)
@@ -167,12 +164,6 @@ def sigver_analyse():
       #   'results': res,
       # },
       'data': res
-    })
-  except urllib.error.HTTPError as e:
-    return flask.jsonify({
-      'success': False,
-      'url': url,
-      'error': str(e)
     })
 
 
