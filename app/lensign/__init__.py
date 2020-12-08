@@ -90,7 +90,7 @@ def sigver_classify_test(user_id):
     })
 
 IMG_UPLOAD_PATH = 'tmp/analyse'
-@app.route('/model/image/analyse/', methods=['GET','POST'])
+@app.route('/model/image/analyse', methods=['GET','POST'])
 def sigver_analyse():
   ORIGINAL_IMG_URLS = request.form.getlist('original_images[]')
   ORIGINAL_IMAGES = []
