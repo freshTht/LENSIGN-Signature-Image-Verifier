@@ -4,6 +4,9 @@ from . import ls_image_classifier
 import flask
 from flask import Flask, request
 
+# for making http request
+import requests
+
 UPLOAD_FOLDER = './tmp/sigver-images'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -120,7 +123,13 @@ def sigver_analyse():
   filepath = os.path.join(app.config['UPLOAD_FOLDER'],filename) 
   file.save(filepath)
 
-  # URL = 'https://firebasestorage.googleapis.com/v0/b/lensign-wanda.appspot.com/o/users%2F11%2Fsig%2F1607312157477.png?alt=media&token=59e98115-5a35-4339-95f9-e713bf2c106b'
+  # make sure the download folder exists
+  if not os.path.exists(IMG_UPLOAD_PATH):
+    os.makedirs(IMG_UPLOAD_PATH)
+
+  #
+  # download original signature images and store them locally
+  #
   for URL in ORIGINAL_IMG_URLS:
 
     # preprocess file name
@@ -136,9 +145,18 @@ def sigver_analyse():
     if not already_exists:
       print('downloading file: {}'.format(FILE_NAME))
 
-      # download with wget
-      stream = os.popen('wget "{}" -O {}'.format(URL,FILE_PATH))
-      output = stream.read()
+      # # download with wget
+      # stream = os.popen('wget "{}" -O {}'.format(URL,FILE_PATH))
+      # output = stream.read()
+
+      # retrieve image
+      res = requests.get(URL)
+
+      # save to file
+      img_file = open(FILE_PATH, 'wb')
+      img_file.write(res.content)
+      img_file.close()
+
     else:
       print('file already exists: {}'.format(FILE_NAME))
 
@@ -152,7 +170,7 @@ def sigver_analyse():
     # add to array
     ORIGINAL_IMAGES.append(FILE_PATH)
 
-  # analyse
+  # perform analysis
   res = ls_image_classifier.analyse(ORIGINAL_IMAGES, filepath)
 
   return flask.jsonify({
